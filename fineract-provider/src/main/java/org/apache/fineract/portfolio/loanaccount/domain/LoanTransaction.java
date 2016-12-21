@@ -118,6 +118,10 @@ public final class LoanTransaction extends AbstractPersistable<Long> {
     @Column(name = "created_date", nullable = false)
     private final Date createdDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "reverse_date", nullable = true)
+    private Date reverseDate;
+
     @ManyToOne
     @JoinColumn(name = "appuser_id", nullable = true)
     private final AppUser appUser;
@@ -356,7 +360,10 @@ public final class LoanTransaction extends AbstractPersistable<Long> {
     }
 
     public void reverse() {
-        this.reversed = true;
+        if (!this.reversed) {
+            this.reversed = true;
+            this.reverseDate = DateUtils.getLocalDateTimeOfTenant().toDate();
+        }
         this.loanTransactionToRepaymentScheduleMappings.clear();
     }
 
