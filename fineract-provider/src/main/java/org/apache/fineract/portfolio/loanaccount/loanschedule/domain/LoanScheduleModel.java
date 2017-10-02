@@ -18,15 +18,16 @@
  */
 package org.apache.fineract.portfolio.loanaccount.loanschedule.domain;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.apache.fineract.organisation.monetary.data.CurrencyData;
 import org.apache.fineract.organisation.monetary.domain.ApplicationCurrency;
 import org.apache.fineract.organisation.monetary.domain.Money;
+import org.apache.fineract.organisation.monetary.domain.MoneyHelper;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.data.LoanScheduleData;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.data.LoanSchedulePeriodData;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Domain representation of a Loan Schedule (not used for persistence)
@@ -83,10 +84,10 @@ public final class LoanScheduleModel {
         this.totalPrincipalDisbursed = principalDisbursed;
         this.totalPrincipalExpected = totalPrincipalExpected;
         this.totalPrincipalPaid = totalPrincipalPaid;
-        this.totalInterestCharged = totalInterestCharged;
+        this.totalInterestCharged = totalInterestCharged.setScale(applicationCurrency.getDecimalPlaces(), MoneyHelper.getRoundingMode());
         this.totalFeeChargesCharged = totalFeeChargesCharged;
         this.totalPenaltyChargesCharged = totalPenaltyChargesCharged;
-        this.totalRepaymentExpected = totalRepaymentExpected;
+        this.totalRepaymentExpected = totalRepaymentExpected.setScale(applicationCurrency.getDecimalPlaces(), MoneyHelper.getRoundingMode());
         this.totalOutstanding = totalOutstanding;
     }
 

@@ -18,14 +18,14 @@
  */
 package org.apache.fineract.portfolio.loanaccount.loanschedule.domain;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.fineract.organisation.monetary.domain.Money;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanInterestRecalcualtionAdditionalDetails;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.data.LoanSchedulePeriodData;
 import org.joda.time.LocalDate;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Domain representation of a Loan Schedule Repayment Period (not used for
@@ -44,6 +44,7 @@ public final class LoanScheduleModelRepaymentPeriod implements LoanScheduleModel
     private Money totalDue;
     private final boolean recalculatedInterestComponent;
     private final List<LoanInterestRecalcualtionAdditionalDetails> loanCompoundingDetails = new ArrayList<>();
+
 
     public static LoanScheduleModelRepaymentPeriod repayment(final int periodNumber, final LocalDate startDate,
             final LocalDate scheduledDueDate, final Money principalDue, final Money outstandingLoanBalance, final Money interestDue,
@@ -70,9 +71,9 @@ public final class LoanScheduleModelRepaymentPeriod implements LoanScheduleModel
 
     @Override
     public LoanSchedulePeriodData toData() {
-        return LoanSchedulePeriodData.repaymentOnlyPeriod(this.periodNumber, this.fromDate, this.dueDate, this.principalDue.getAmount(),
-                this.outstandingLoanBalance.getAmount(), this.interestDue.getAmount(), this.feeChargesDue.getAmount(),
-                this.penaltyChargesDue.getAmount(), this.totalDue.getAmount(), this.principalDue.plus(this.interestDue).getAmount());
+        return LoanSchedulePeriodData.repaymentOnlyPeriod(this.periodNumber, this.fromDate, this.dueDate, this.principalDue.getScaledAmount(),
+                this.outstandingLoanBalance.getScaledAmount(), this.interestDue.getScaledAmount(), this.feeChargesDue.getScaledAmount(),
+                this.penaltyChargesDue.getScaledAmount(), this.totalDue.getScaledAmount(), this.principalDue.plus(this.interestDue).getScaledAmount());
     }
 
     @Override

@@ -18,10 +18,12 @@
  */
 package org.apache.fineract.portfolio.loanaccount.data;
 
-import java.math.BigDecimal;
-
 import org.apache.fineract.organisation.monetary.data.CurrencyData;
 import org.joda.time.LocalDate;
+
+import java.math.BigDecimal;
+
+import static org.apache.fineract.organisation.monetary.domain.MoneyHelper.applyScale;
 
 /**
  * Immutable data object representing loan summary information.
@@ -30,38 +32,38 @@ import org.joda.time.LocalDate;
 public class LoanSummaryData {
 
     private final CurrencyData currency;
-    private final BigDecimal principalDisbursed;
-    private final BigDecimal principalPaid;
-    private final BigDecimal principalWrittenOff;
-    private final BigDecimal principalOutstanding;
-    private final BigDecimal principalOverdue;
-    private final BigDecimal interestCharged;
-    private final BigDecimal interestPaid;
-    private final BigDecimal interestWaived;
-    private final BigDecimal interestWrittenOff;
-    private final BigDecimal interestOutstanding;
-    private final BigDecimal interestOverdue;
-    private final BigDecimal feeChargesCharged;
-    private final BigDecimal feeChargesDueAtDisbursementCharged;
-    private final BigDecimal feeChargesPaid;
-    private final BigDecimal feeChargesWaived;
-    private final BigDecimal feeChargesWrittenOff;
-    private final BigDecimal feeChargesOutstanding;
-    private final BigDecimal feeChargesOverdue;
-    private final BigDecimal penaltyChargesCharged;
-    private final BigDecimal penaltyChargesPaid;
-    private final BigDecimal penaltyChargesWaived;
-    private final BigDecimal penaltyChargesWrittenOff;
-    private final BigDecimal penaltyChargesOutstanding;
-    private final BigDecimal penaltyChargesOverdue;
-    private final BigDecimal totalExpectedRepayment;
-    private final BigDecimal totalRepayment;
-    private final BigDecimal totalExpectedCostOfLoan;
-    private final BigDecimal totalCostOfLoan;
-    private final BigDecimal totalWaived;
-    private final BigDecimal totalWrittenOff;
-    private final BigDecimal totalOutstanding;
-    private final BigDecimal totalOverdue;
+    private BigDecimal principalDisbursed;
+    private BigDecimal principalPaid;
+    private BigDecimal principalWrittenOff;
+    private BigDecimal principalOutstanding;
+    private BigDecimal principalOverdue;
+    private BigDecimal interestCharged;
+    private BigDecimal interestPaid;
+    private BigDecimal interestWaived;
+    private BigDecimal interestWrittenOff;
+    private BigDecimal interestOutstanding;
+    private BigDecimal interestOverdue;
+    private BigDecimal feeChargesCharged;
+    private BigDecimal feeChargesDueAtDisbursementCharged;
+    private BigDecimal feeChargesPaid;
+    private BigDecimal feeChargesWaived;
+    private BigDecimal feeChargesWrittenOff;
+    private BigDecimal feeChargesOutstanding;
+    private BigDecimal feeChargesOverdue;
+    private BigDecimal penaltyChargesCharged;
+    private BigDecimal penaltyChargesPaid;
+    private BigDecimal penaltyChargesWaived;
+    private BigDecimal penaltyChargesWrittenOff;
+    private BigDecimal penaltyChargesOutstanding;
+    private BigDecimal penaltyChargesOverdue;
+    private BigDecimal totalExpectedRepayment;
+    private BigDecimal totalRepayment;
+    private BigDecimal totalExpectedCostOfLoan;
+    private BigDecimal totalCostOfLoan;
+    private BigDecimal totalWaived;
+    private BigDecimal totalWrittenOff;
+    private BigDecimal totalOutstanding;
+    private BigDecimal totalOverdue;
     private final LocalDate overdueSinceDate;
 
     public LoanSummaryData(final CurrencyData currency, final BigDecimal principalDisbursed, final BigDecimal principalPaid,
@@ -119,4 +121,46 @@ public class LoanSummaryData {
     public BigDecimal getTotalPaidFeeCharges() {
         return feeChargesPaid ;
     }
+
+    public LoanSummaryData getScaledValues() {
+        this.feeChargesCharged = applyScale(this.feeChargesCharged);
+        this.feeChargesDueAtDisbursementCharged = applyScale(this.feeChargesDueAtDisbursementCharged);
+        this.feeChargesOutstanding = applyScale(this.feeChargesOutstanding);
+        this.feeChargesOverdue = applyScale(this.feeChargesOverdue);
+        this.feeChargesPaid = applyScale(this.feeChargesPaid);
+        this.feeChargesWaived = applyScale(this.feeChargesWaived);
+        this.feeChargesWrittenOff = applyScale(this.feeChargesWrittenOff);
+
+        this.interestCharged = applyScale(this.interestCharged);
+        this.interestOutstanding = applyScale(this.interestOutstanding);
+        this.interestOverdue = applyScale(this.interestOverdue);
+        this.interestPaid = applyScale(this.interestPaid);
+        this.interestWaived = applyScale(this.interestWaived);
+        this.interestWrittenOff = applyScale(this.interestWrittenOff);
+
+        this.penaltyChargesCharged = applyScale(this.penaltyChargesCharged);
+        this.penaltyChargesOutstanding = applyScale(this.penaltyChargesOutstanding);
+        this.penaltyChargesOverdue = applyScale(this.penaltyChargesOverdue);
+        this.penaltyChargesPaid = applyScale(this.penaltyChargesPaid);
+        this.penaltyChargesWaived = applyScale(this.penaltyChargesWaived);
+        this.penaltyChargesWrittenOff = applyScale(this.penaltyChargesWrittenOff);
+
+        this.principalDisbursed = applyScale(this.principalDisbursed);
+        this.principalOutstanding = applyScale(this.principalOutstanding);
+        this.principalOverdue = applyScale(this.principalOverdue);
+        this.principalPaid = applyScale(this.principalPaid);
+        this.principalWrittenOff = applyScale(this.principalWrittenOff);
+
+        this.totalExpectedRepayment = applyScale(this.totalExpectedRepayment);
+        this.totalRepayment = applyScale(this.totalRepayment);
+        this.totalExpectedCostOfLoan = applyScale(this.totalExpectedCostOfLoan);
+        this.totalCostOfLoan = applyScale(this.totalCostOfLoan);
+        this.totalWaived = applyScale(this.totalWaived);
+        this.totalWrittenOff = applyScale(this.totalWrittenOff);
+        this.totalOutstanding = applyScale(this.totalOutstanding);
+        this.totalOverdue = applyScale(this.totalOverdue);
+
+        return this;
+    }
+
 }

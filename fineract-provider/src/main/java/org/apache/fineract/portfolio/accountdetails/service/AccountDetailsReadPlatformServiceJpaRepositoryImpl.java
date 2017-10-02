@@ -22,12 +22,14 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.fineract.infrastructure.core.data.EnumOptionData;
 import org.apache.fineract.infrastructure.core.domain.JdbcSupport;
 import org.apache.fineract.infrastructure.core.service.RoutingDataSource;
 import org.apache.fineract.organisation.monetary.data.CurrencyData;
+import org.apache.fineract.organisation.monetary.domain.MoneyHelper;
 import org.apache.fineract.portfolio.accountdetails.data.AccountSummaryCollectionData;
 import org.apache.fineract.portfolio.accountdetails.data.LoanAccountSummaryData;
 import org.apache.fineract.portfolio.accountdetails.data.SavingsAccountSummaryData;
@@ -36,6 +38,8 @@ import org.apache.fineract.portfolio.client.service.ClientReadPlatformService;
 import org.apache.fineract.portfolio.group.service.GroupReadPlatformService;
 import org.apache.fineract.portfolio.loanaccount.data.LoanApplicationTimelineData;
 import org.apache.fineract.portfolio.loanaccount.data.LoanStatusEnumData;
+import org.apache.fineract.portfolio.loanproduct.domain.LoanProduct;
+import org.apache.fineract.portfolio.loanproduct.domain.LoanProductRepository;
 import org.apache.fineract.portfolio.loanproduct.service.LoanEnumerations;
 import org.apache.fineract.portfolio.savings.data.SavingsAccountApplicationTimelineData;
 import org.apache.fineract.portfolio.savings.data.SavingsAccountStatusEnumData;
@@ -56,6 +60,9 @@ public class AccountDetailsReadPlatformServiceJpaRepositoryImpl implements Accou
     private final JdbcTemplate jdbcTemplate;
     private final ClientReadPlatformService clientReadPlatformService;
     private final GroupReadPlatformService groupReadPlatformService;
+
+    @Autowired
+    LoanProductRepository loanProductRepository;
 
     @Autowired
     public AccountDetailsReadPlatformServiceJpaRepositoryImpl(final ClientReadPlatformService clientReadPlatformService,
@@ -114,7 +121,15 @@ public class AccountDetailsReadPlatformServiceJpaRepositoryImpl implements Accou
     private List<LoanAccountSummaryData> retrieveLoanAccountDetails(final String loanwhereClause, final Object[] inputs) {
         final LoanAccountSummaryDataMapper rm = new LoanAccountSummaryDataMapper();
         final String sql = "select " + rm.loanAccountSummarySchema() + loanwhereClause;
-        return this.jdbcTemplate.query(sql, rm, inputs);
+
+        List<LoanAccountSummaryData> loanAccountDetails = this.jdbcTemplate.query(sql, rm, inputs);
+
+        for (LoanAccountSummaryData currentLoanAccount: loanAccountDetails){
+            LoanProduct loanProduct = loanProductRepository.findOne(currentLoanAccount.getProductId());
+            MoneyHelper.setDecimalPlaces(loanProduct.getCurrency().getDigitsAfterDecimal());
+            currentLoanAccount.getScaledValues();
+        }
+        return loanAccountDetails;
     }
 
     /**

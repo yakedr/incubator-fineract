@@ -18,14 +18,6 @@
  */
 package org.apache.fineract.portfolio.loanaccount.data;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.Transient;
-
 import org.apache.fineract.infrastructure.codes.data.CodeValueData;
 import org.apache.fineract.infrastructure.core.data.EnumOptionData;
 import org.apache.fineract.organisation.monetary.data.CurrencyData;
@@ -49,6 +41,13 @@ import org.apache.fineract.portfolio.loanproduct.domain.LoanProductValueConditio
 import org.apache.fineract.portfolio.note.data.NoteData;
 import org.joda.time.LocalDate;
 import org.springframework.util.CollectionUtils;
+
+import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Immutable data object representing loan account data.
@@ -124,7 +123,7 @@ public class LoanAccountData {
     private final LoanApplicationTimelineData timeline;
 
     // totals
-    private final LoanSummaryData summary;
+    private LoanSummaryData summary;
 
     // associations
     private final LoanScheduleData repaymentSchedule;
@@ -1548,6 +1547,13 @@ public class LoanAccountData {
 
     public boolean isMonthlyRepaymentFrequencyType() {
         return (this.repaymentFrequencyType.getId().intValue() == PeriodFrequencyType.MONTHS.getValue());
+    }
+
+    public LoanAccountData getScaledValues() {
+        if (this.summary != null)
+            this.summary = summary.getScaledValues();
+
+        return this;
     }
 
 }
