@@ -18,11 +18,13 @@
  */
 package org.apache.fineract.portfolio.accountdetails.data;
 
-import java.math.BigDecimal;
-
 import org.apache.fineract.infrastructure.core.data.EnumOptionData;
 import org.apache.fineract.portfolio.loanaccount.data.LoanApplicationTimelineData;
 import org.apache.fineract.portfolio.loanaccount.data.LoanStatusEnumData;
+
+import java.math.BigDecimal;
+
+import static org.apache.fineract.organisation.monetary.domain.MoneyHelper.applyScale;
 
 /**
  * Immutable data object for loan accounts.
@@ -41,9 +43,9 @@ public class LoanAccountSummaryData {
     private final Integer loanCycle;
     private final LoanApplicationTimelineData timeline;
     private final Boolean inArrears;
-    private final BigDecimal originalLoan;
-    private final BigDecimal loanBalance;
-    private final BigDecimal amountPaid;
+    private BigDecimal originalLoan;
+    private BigDecimal loanBalance;
+    private BigDecimal amountPaid;
     
     public LoanAccountSummaryData(final Long id, final String accountNo, final String externalId, final Long productId,
             final String loanProductName, final String shortLoanProductName, final LoanStatusEnumData loanStatus, final EnumOptionData loanType, final Integer loanCycle,
@@ -62,5 +64,17 @@ public class LoanAccountSummaryData {
         this.loanBalance = loanBalance;
         this.originalLoan = originalLoan;
         this.amountPaid = amountPaid;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public LoanAccountSummaryData getScaledValues() {
+        this.loanBalance = applyScale(loanBalance);
+        this.originalLoan = applyScale(originalLoan);
+        this.amountPaid = applyScale(amountPaid);
+
+        return this;
     }
 }
