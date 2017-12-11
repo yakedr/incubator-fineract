@@ -18,31 +18,6 @@
  */
 package org.apache.fineract.template.api;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
-
 import org.apache.fineract.commands.domain.CommandWrapper;
 import org.apache.fineract.commands.service.CommandWrapperBuilder;
 import org.apache.fineract.commands.service.PortfolioCommandSourceWritePlatformService;
@@ -50,6 +25,9 @@ import org.apache.fineract.infrastructure.core.api.ApiRequestParameterHelper;
 import org.apache.fineract.infrastructure.core.data.CommandProcessingResult;
 import org.apache.fineract.infrastructure.core.serialization.ApiRequestJsonSerializationSettings;
 import org.apache.fineract.infrastructure.core.serialization.DefaultToApiJsonSerializer;
+import org.apache.fineract.infrastructure.dataqueries.data.DatatableData;
+import org.apache.fineract.infrastructure.dataqueries.data.ResultsetColumnHeaderData;
+import org.apache.fineract.infrastructure.dataqueries.service.ReadWriteNonCoreDataService;
 import org.apache.fineract.infrastructure.security.service.PlatformSecurityContext;
 import org.apache.fineract.template.data.TemplateData;
 import org.apache.fineract.template.domain.Template;
@@ -61,6 +39,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.*;
 
 @Path("/templates")
 @Consumes({ MediaType.APPLICATION_JSON })
@@ -80,13 +67,15 @@ public class TemplatesApiResource {
     private final TemplateDomainService templateService;
     private final TemplateMergeService templateMergeService;
     private final PortfolioCommandSourceWritePlatformService commandsSourceWritePlatformService;
+    private final ReadWriteNonCoreDataService readWriteNonCoreDataService;
 
     @Autowired
     public TemplatesApiResource(final PlatformSecurityContext context, final DefaultToApiJsonSerializer<Template> toApiJsonSerializer,
             final DefaultToApiJsonSerializer<TemplateData> templateDataApiJsonSerializer,
             final ApiRequestParameterHelper apiRequestParameterHelper, final TemplateDomainService templateService,
             final TemplateMergeService templateMergeService,
-            final PortfolioCommandSourceWritePlatformService commandsSourceWritePlatformService) {
+            final PortfolioCommandSourceWritePlatformService commandsSourceWritePlatformService,
+            final ReadWriteNonCoreDataService readWriteNonCoreDataService) {
 
         this.context = context;
         this.toApiJsonSerializer = toApiJsonSerializer;
@@ -95,6 +84,7 @@ public class TemplatesApiResource {
         this.templateService = templateService;
         this.templateMergeService = templateMergeService;
         this.commandsSourceWritePlatformService = commandsSourceWritePlatformService;
+        this.readWriteNonCoreDataService = readWriteNonCoreDataService;
     }
 
     @GET
@@ -124,6 +114,7 @@ public class TemplatesApiResource {
         this.context.authenticatedUser().validateHasReadPermission(this.RESOURCE_NAME_FOR_PERMISSION);
 
         final TemplateData templateData = TemplateData.template();
+        templateData.setDatatablesKeys(getDatatablesKeys());
 
         final ApiRequestJsonSerializationSettings settings = this.apiRequestParameterHelper.process(uriInfo.getQueryParameters());
         return this.templateDataApiJsonSerializer.serialize(settings, templateData, this.RESPONSE_TEMPLATES_DATA_PARAMETERS);
@@ -157,6 +148,8 @@ public class TemplatesApiResource {
         this.context.authenticatedUser().validateHasReadPermission(this.RESOURCE_NAME_FOR_PERMISSION);
 
         final TemplateData template = TemplateData.template(this.templateService.findOneById(templateId));
+        template.setDatatablesKeys(getDatatablesKeys());
+
 
         final ApiRequestJsonSerializationSettings settings = this.apiRequestParameterHelper.process(uriInfo.getQueryParameters());
         return this.templateDataApiJsonSerializer.serialize(settings, template, this.RESPONSE_TEMPLATE_DATA_PARAMETERS);
@@ -209,5 +202,36 @@ public class TemplatesApiResource {
         parametersMap.put("BASE_URI", uriInfo.getBaseUri());
         parametersMap.putAll(result);
         return this.templateMergeService.compile(template, parametersMap);
+    }
+
+    private Map<String, Map<String, Object>> getDatatablesKeys() {
+
+        List<DatatableData> datatableNames = readWriteNonCoreDataService.retrieveDatatableNames(null);
+
+        final Map<String, Map<String, Object>> out = new HashMap<>();
+
+        for (final DatatableData data : datatableNames) {
+            String datatablename = data.getRegisteredTableName();
+            List<ResultsetColumnHeaderData> columnHeaderData = data.getColumnHeaderData();
+
+            Map<String, Object> datableKeys = new HashMap<>();
+            datableKeys.put("registeredTableName", datatablename);
+            String appTableName = data.getApplicationTableName();
+            datableKeys.put("applicationTableName", appTableName);
+
+            Map<String, Object> templateMapper = new HashMap<>();
+            templateMapper.put("mapperKey","datatable");
+            templateMapper.put("mapperValue","datatables/"+datatablename+"/{{"+appTableName.substring(2,appTableName.length())+"Id}}?tenantIdentifier=default");
+            datableKeys.put("templateMapper", templateMapper);
+
+            List<String> templateKeys = new ArrayList<>(columnHeaderData.size());
+            for (ResultsetColumnHeaderData columnHeader: columnHeaderData ) {
+                templateKeys.add("{{"+templateMapper.get("mapperKey")+".data#0."+columnHeader.getColumnName()+"}}");
+            }
+            datableKeys.put("templateKeys", templateKeys);
+
+            out.put(datatablename, datableKeys);
+        }
+        return out;
     }
 }

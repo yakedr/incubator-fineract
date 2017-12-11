@@ -25,11 +25,11 @@ import java.util.List;
  */
 public class DatatableData {
 
-    @SuppressWarnings("unused")
+
     private final String applicationTableName;
-    @SuppressWarnings("unused")
+
     private final String registeredTableName;
-    @SuppressWarnings("unused")
+
     private final List<ResultsetColumnHeaderData> columnHeaderData;
 
 
@@ -44,5 +44,17 @@ public class DatatableData {
         this.registeredTableName = registeredTableName;
         this.columnHeaderData = columnHeaderData;
 
+    }
+
+    public String getApplicationTableName() {
+        return applicationTableName;
+    }
+
+    public String getRegisteredTableName() {
+        return registeredTableName;
+    }
+
+    public List<ResultsetColumnHeaderData> getColumnHeaderData() {
+        return columnHeaderData;
     }
 }

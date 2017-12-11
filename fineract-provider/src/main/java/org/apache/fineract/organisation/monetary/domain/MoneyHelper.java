@@ -18,20 +18,22 @@
  */
 package org.apache.fineract.organisation.monetary.domain;
 
-import java.math.RoundingMode;
-
-import javax.annotation.PostConstruct;
-
 import org.apache.fineract.infrastructure.configuration.domain.ConfigurationDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Component
 public class MoneyHelper {
     
     private static RoundingMode roundingMode = null;
     private static ConfigurationDomainService staticConfigurationDomainService;
-    
+
+    private static int decimalPlaces;
+
     @Autowired
     private ConfigurationDomainService configurationDomainService;
 
@@ -47,5 +49,21 @@ public class MoneyHelper {
         }
         return roundingMode;
     }
+
+    public static BigDecimal applyScale(BigDecimal value){
+        if (value != null)
+            return value.setScale(decimalPlaces, MoneyHelper.getRoundingMode());
+        return BigDecimal.valueOf(0);
+    }
+
+    public static int getDecimalPlaces() {
+        return decimalPlaces;
+    }
+
+    public static void setDecimalPlaces(int decimalPlaces) {
+        MoneyHelper.decimalPlaces = decimalPlaces;
+    }
+
+
 
 }

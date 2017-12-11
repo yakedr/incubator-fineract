@@ -18,12 +18,11 @@
  */
 package org.apache.fineract.organisation.monetary.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Iterator;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 
 @Embeddable
 public class Money implements Comparable<Money> {
@@ -76,7 +75,7 @@ public class Money implements Comparable<Money> {
     }
 
     private Money(final String currencyCode, final int digitsAfterDecimal, final BigDecimal amount, final Integer inMultiplesOf) {
-        this.currencyCode = currencyCode;
+         this.currencyCode = currencyCode;
         this.currencyDigitsAfterDecimal = digitsAfterDecimal;
         this.inMultiplesOf = inMultiplesOf;
 
@@ -89,7 +88,12 @@ public class Money implements Comparable<Money> {
             final double existingVal = amountScaled.doubleValue();
             amountScaled = BigDecimal.valueOf(roundToMultiplesOf(existingVal, inMultiplesOf));
         }
-        this.amount = amountScaled.setScale(this.currencyDigitsAfterDecimal, MoneyHelper.getRoundingMode());
+        //this.amount = amountScaled.setScale(this.currencyDigitsAfterDecimal, MoneyHelper.getRoundingMode());
+        this.amount = amountScaled;
+    }
+
+    public BigDecimal getScaledAmount(){
+        return amount.setScale(this.currencyDigitsAfterDecimal, MoneyHelper.getRoundingMode());
     }
 
     public static double roundToMultiplesOf(final double existingVal, final Integer inMultiplesOf) {
