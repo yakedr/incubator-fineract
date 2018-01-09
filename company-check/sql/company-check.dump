@@ -1,0 +1,47 @@
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `hibernate_sequence`;
+CREATE TABLE `hibernate_sequence`  (
+  `next_val` bigint(20) DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+
+DROP TABLE IF EXISTS `m_company`;
+CREATE TABLE `m_company`  (
+  `id` bigint(20) NOT NULL,
+  `approvedby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `approvedon_date` date DEFAULT NULL,
+  `cant_employees` int(11) NOT NULL,
+  `createdby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `createdon_date` date NOT NULL,
+  `date_operations_start` datetime NOT NULL,
+  `lastmodifiedby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `lastmodifiedon_date` date DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `rejectedby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `rejectedon_date` date DEFAULT NULL,
+  `ruc` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `status_enum` int(11) NOT NULL,
+  `sourceid` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `FK2pt5xfle07nyb4yds75528rrd`(`sourceid`) USING BTREE,
+  CONSTRAINT `FK2pt5xfle07nyb4yds75528rrd` FOREIGN KEY (`sourceid`) REFERENCES `m_source` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+
+DROP TABLE IF EXISTS `m_source`;
+CREATE TABLE `m_source`  (
+  `id` bigint(20) NOT NULL,
+  `approvedby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `approvedon_date` date DEFAULT NULL,
+  `createdby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `createdon_date` date NOT NULL,
+  `lastmodifiedby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `lastmodifiedon_date` date DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `rejectedby_userid` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `rejectedon_date` date DEFAULT NULL,
+  `status_enum` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+
+SET FOREIGN_KEY_CHECKS = 1;

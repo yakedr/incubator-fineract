@@ -1,0 +1,470 @@
+{
+	"info": {
+		"name": "Mifos - CompanyCheck",
+		"_postman_id": "760df6a9-8564-cf08-29b2-f3bec08fa944",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Source",
+			"description": "",
+			"item": [
+				{
+					"name": "Source",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/v1/sources/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sources",
+								"2"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Source List",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/v1/sources",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sources"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Source",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Fuente de Empresa 5\",\n    \"createdOn\":\"20171110\",\n    \"dateFormat\":\"yyyyMMdd\",\n    \"locale\":\"es\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/sources",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sources"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Source Reject",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rejectedOn\":\"20171111\",\n    \"dateFormat\":\"yyyyMMdd\",\n    \"locale\":\"es\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/sources/3?command=reject",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sources",
+								"3"
+							],
+							"query": [
+								{
+									"key": "command",
+									"value": "reject",
+									"equals": true
+								}
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Source Approve",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"approvedOn\":\"20171111\",\n    \"dateFormat\":\"yyyyMMdd\",\n    \"locale\":\"es\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/sources/2?command=approve",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sources",
+								"2"
+							],
+							"query": [
+								{
+									"key": "command",
+									"value": "approve",
+									"equals": true
+								}
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Source",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Fuente de Empresa Actualizada\",\n  \"updatedOn\":\"20171111\",\n  \"dateFormat\":\"yyyyMMdd\",\n  \"locale\":\"es\"\n  \n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/sources/4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sources",
+								"4"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Source",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/v1/sources/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sources",
+								"2"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8cb27a69-f230-4288-a715-d9d29364b7d0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "33ef6038-9416-45b8-ab4c-94882839ab48",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Company copy",
+			"description": "",
+			"item": [
+				{
+					"name": "Company",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/v1/companies/8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies",
+								"8"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Company List",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/v1/companies",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"GasOIL Inc.\",\n  \"ruc\":\"Unknown\",\n  \"cantEmployees\": 750,\n  \"dateOperationsStart\": \"2013-05-20\",\n  \"sourceId\": 2,\n    \"createdOn\":\"2017-11-26\",\n    \"dateFormat\":\"yyyy-MM-dd\",\n    \"locale\":\"es\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/companies",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Company Reject",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rejectedOn\":\"20181115\",\n    \"dateFormat\":\"yyyyMMdd\",\n    \"locale\":\"es\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/companies/2?command=reject",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies",
+								"2"
+							],
+							"query": [
+								{
+									"key": "command",
+									"value": "reject",
+									"equals": true
+								}
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Company Approve",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"approvedOn\":\"20171130\",\n    \"dateFormat\":\"yyyyMMdd\",\n    \"locale\":\"es\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/companies/4?command=approve",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies",
+								"4"
+							],
+							"query": [
+								{
+									"key": "command",
+									"value": "approve",
+									"equals": true
+								}
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Company",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"updatedOn\":\"20171111\",\n  \"dateFormat\":\"yyyyMMdd\",\n  \"locale\":\"es\",\n  \"ruc\":\"Nuevo RUC\",\n  \"sourceId\": 2\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/companies/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies",
+								"1"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Company",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/v1/companies/8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies",
+								"8"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
