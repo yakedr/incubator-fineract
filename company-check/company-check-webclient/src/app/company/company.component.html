@@ -1,0 +1,298 @@
+  <div class="row m-5">
+    <div class="col mt-3 pl-0">
+      <div class="input-group">
+        <input type="text" class="form-control" id="search1" placeholder="Search for companies...">
+        <div class="input-group-btn">
+          <button class="btn btn-secondary" type="button">
+          <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col mt-3 float-right">
+      <button class="col-2 btn btn-secondary float-right mr-4" style="width: fit-content" (click)="modalAddCompany.show()">
+        <i class="fa fa-plus" title="Add Company"></i>
+      </button>
+    </div>
+  </div>
+  <div class="row m-5" id="datalist">
+    <div class="mb-6">
+      <data-table headerTitle="Companies" class="" [limit]="paginator.pageTotal" [items]="companies"
+                  [itemCount]="companyCount" [header]="false" [selectOnRowClick]="true" [multiSelect]="false" (rowClick)="rowClick($event)">
+        <data-table-column
+          [property]="'name'"
+          [header]="'Nombre'"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'ruc'"
+          [header]="'RUC'"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'yearsOperating'"
+          [header]="'Años de Operación'"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'cantEmployees'"
+          [header]="'Empleados'"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'sourceName'"
+          [header]="'Fuente'"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'status'"
+          [header]="'Estado'"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'actions'"
+          [header]="'Acciones'"
+          [sortable]="false"
+          [resizable]="false">
+          <ng-template #dataTableCell let-item="item">
+          <div class="row">
+            <div class="col">
+              <button id="approveCompany" *ngIf="item.status == 'PENDING_APPROVAL'" class="btn btn-secondary px-2 py-1" (click)="modalApprove.show()">
+                <i class="fa fa-check fa-fw" title="Approve Company"></i>
+              </button>
+            </div>
+            <div class="col">
+              <button id="editCompany" class="btn btn-secondary px-2 py-1">
+                <i class="fa fa-pencil fa-fw" title="Edit Company" (click)="openUpdateModal(modalUpdateCompany, item)"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row mt-1">
+            <div class="col">
+              <button id="rejectCompany" *ngIf="item.status == 'PENDING_APPROVAL'"  class="btn btn-secondary px-2 py-1" (click)="modalReject.show()">
+                <i class="fa fa-times fa-fw" title="Reject Company"></i>
+              </button>
+            </div>
+            <div class="col">
+              <button id="deleteCompany" class="btn btn-secondary px-2 py-1" (click)="modalDelete.show()">
+                <i class="fa fa-trash fa-fw" title="Delete Company"></i>
+              </button>
+            </div>
+              </div>
+          </ng-template>
+        </data-table-column>
+
+      </data-table>
+    </div>
+
+  </div>
+
+  <!-- Modal Add-->
+  <div bsModal #modalAddCompany="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+       aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class= "modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span>Añadir Nueva Empresa</span>
+          </h4>
+          <button type="button" class="close" aria-label="Close" (click)="modalAddCompany.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <form role="form" [formGroup]="companyForm" (ngSubmit)="AddCompany(modalAddCompany,companyForm.value)">
+        <div class="modal-body">
+          <div class="form-group">
+              <label class="mr-sm-2" for="companyName">Nombre: </label>
+              <input id="companyName" type="text" class="form-control"
+			  [formControl]="companyForm.controls['companyName']">
+            </div>
+            <div class="form-group col- 2">
+              <label class="mr-sm-2" for="ruc">RUC: </label>
+              <input id="ruc" type="text" class="form-control" [formControl]="companyForm.controls['ruc']">
+            </div>
+            <div class="form-group">
+              <label for="selectSource">Select Source</label>
+              <select class="custom-select form-control" id="selectSource" [formControl]="companyForm.controls['source']">
+                <option value="" selected disabled>Select source...</option>
+                <option *ngFor="let item of sources" [ngValue]="item">{{item.name}}</option>
+              </select>
+            </div>
+            <div class="row">
+            <div class="col">
+              <label for="employee">Empleados: </label>
+              <input id="employee" type="number" class="form-control" [formControl]="companyForm.controls['cantEmployees']"/>
+            </div>
+            <div class="form-group col" >
+              <label class="mr-sm-2" for="companyStatus">Estado Inicial: </label>
+              <input id="companyStatus" type="text" class="form-control" [formControl]="companyForm.controls['companyStatus']">
+            </div>
+            </div>
+          <form class="form-inline">
+            <div class="form-group">
+              <label for="startDate">Fecha de Inicio de Operaciones: </label>
+              <div class="input-group">
+                <input id="startDate" class="form-control" [formControl]="companyForm.controls['dateOperationsStart']"
+                       placeholder="yyyy-mm-dd"
+                       [(ngModel)]="dateModel" ngbDatepicker #d="ngbDatepicker">
+                <button class="input-group-addon" (click)="d.toggle()" type="button">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="modalAddCompany.hide()">Cerrar</button>
+          <button type="submit" class="btn btn-secondary modal-accept" [disabled]="!companyForm.valid">Aceptar</button>
+        </div><!--Close modal-footer-->
+      </form>
+      </div><!--Close modal-content-->
+    </div><!--Close modal-dialog-->
+  </div>
+
+  <!-- Modal Update-->
+  <div bsModal #modalUpdateCompany="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+       aria-labelledby="myModalLabel1" aria-hidden="true" (onHide)="resetForm()">
+    <div class="modal-dialog" role="document">
+      <form role="form" [formGroup]="companyForm" (ngSubmit)="UpdateCompany(modalUpdateCompany,companyForm.value)">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">
+              <span>Actualizar Fuente</span>
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modalUpdateCompany.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" *ngIf="selectedCompany">
+            <div class="form-group">
+              <label class="mr-sm-2" for="companyName1">Nombre: </label>
+              <input id="companyName1" type="text" class="form-control"
+                     [formControl]="companyForm.controls['companyName']">
+            </div>
+            <div class="form-group col- 2">
+              <label class="mr-sm-2" for="ruc1">RUC: </label>
+              <input id="ruc1" type="text" class="form-control" [formControl]="companyForm.controls['ruc']">
+            </div>
+            <div class="form-group">
+              <label for="selectSource1">Select Source</label>
+              <select class="custom-select form-control" id="selectSource1" [formControl]="companyForm.controls['source']">
+                <option value="" selected disabled>Select source...</option>
+                <option *ngFor="let item of sources" [ngValue]="item">{{item.name}}</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label for="employee1">Empleados: </label>
+                <input id="employee1" type="number" class="form-control" [formControl]="companyForm.controls['cantEmployees']"/>
+              </div>
+              <div class="form-group col" >
+                <label class="mr-sm-2" for="companyStatus1">Estado Inicial: </label>
+                <input id="companyStatus1" type="text" class="form-control" [formControl]="companyForm.controls['companyStatus']">
+              </div>
+            </div>
+            <form class="form-inline">
+              <div class="form-group">
+                <label for="startDate1">Fecha de Inicio de Operaciones: </label>
+                <div class="input-group">
+                  <input id="startDate1" class="form-control" placeholder="yyyy-mm-dd"
+                         name="dp" [(ngModel)]="dateModel" ngbDatepicker #d="ngbDatepicker">
+                  <button class="input-group-addon" (click)="d.toggle()" type="button">
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" (click)="modalUpdateCompany.hide()">Cerrar</button>
+            <button type="submit" class="btn btn-secondary modal-accept" [disabled]="!companyForm.valid">Aceptar</button>
+          </div><!--Close modal-footer-->
+        </div><!--Close modal-content-->
+      </form>
+    </div><!--Close modal-dialog-->
+  </div>
+
+  <!-- Modal Approve-->
+  <div bsModal #modalApprove="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+       aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class= "modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span>Aprobar Empresa Pendiente</span>
+          </h4>
+          <button type="button" class="close" aria-label="Close" (click)="modalApprove.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="selectedCompany">
+          La empresa <span class="font-weight-bold">{{selectedCompany.name}}</span> pasará a estado APROBADO.
+          ¿Desea continuar?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="modalApprove.hide()">Cerrar</button>
+          <button type="button" class="btn btn-secondary modal-accept" (click)="ChangeCompanyStatus(modalApprove,'approve')">Aceptar</button>
+        </div><!--Close modal-footer-->
+      </div><!--Close modal-content-->
+    </div><!--Close modal-dialog-->
+  </div>
+
+  <!-- Modal Reject-->
+  <div bsModal #modalReject="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+       aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class= "modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span>Rechazar Empresa Pendiente</span>
+          </h4>
+          <button type="button" class="close" aria-label="Close" (click)="modalReject.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="selectedCompany">
+          La empresa <span class="font-weight-bold">{{selectedCompany.name}}</span> pasará a estado RECHAZADO.
+          ¿Desea continuar?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="modalReject.hide()">Cerrar</button>
+          <button type="button" class="btn btn-secondary modal-accept" (click)="ChangeCompanyStatus(modalReject,'reject')">Aceptar</button>
+        </div><!--Close modal-footer-->
+      </div><!--Close modal-content-->
+    </div><!--Close modal-dialog-->
+  </div>
+
+  <!-- Modal Delete-->
+  <div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+       aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span>Eliminar Empresa Pendiente</span>
+          </h4>
+          <button type="button" class="close" aria-label="Close" (click)="modalDelete.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="selectedCompany">
+          La empresa <span class="font-weight-bold">{{selectedCompany.name}}</span> será eliminada del sistema.
+          ¿Desea continuar?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="modalDelete.hide()">Cerrar</button>
+          <button type="button" class="btn btn-secondary modal-accept" (click)="DeleteCompany(modalDelete)">
+            Aceptar
+          </button>
+        </div><!--Close modal-footer-->
+      </div><!--Close modal-content-->
+    </div><!--Close modal-dialog-->
+  </div>

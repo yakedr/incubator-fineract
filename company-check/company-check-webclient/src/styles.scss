@@ -1,0 +1,31 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~bootstrap/scss/bootstrap.scss';
+
+.menubar {
+  a.router-link-active {
+    background: darken(darkgray, 5%);
+    color: #fff;
+  }
+  a {
+    &:hover {
+      background-color: #436769;
+      color: white !important;
+    }
+  }
+}
+
+button.modal-accept {
+      &:hover {
+      background-color: #293b50 !important;
+      color: white !important;
+    }
+}
+
+.dark-modal .modal-content {
+  background-color: #7e847c;
+  color: white;
+}
+
+.dark-modal .close {
+  color: white;
+}

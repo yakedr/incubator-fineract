@@ -1,0 +1,31 @@
+<div class="container-fluid">
+  <div class="row mx-0">
+    <nav class="col navbar navbar-light bg-info" id="header">
+      <span class="navbar-brand mb-0 h1 text-white">Company Check</span>
+    </nav>
+  </div>
+  <div class="row mx-0">
+    <nav class="col navbar navbar-expand-lg navbar-light menubar" style="background-color: #dde4ea">
+      <div class="collapse navbar-collapse">
+      <ul class="navbar-nav nav-pills">
+        <li class="nav-item" >
+        <a  class="nav-link" routerLink="/company-list" [routerLinkActive]="['router-link-active']">
+          Company
+        </a>
+      </li>
+        <li>
+        <a class="nav-link" routerLink="/source-list" [routerLinkActive]="['router-link-active']">
+          Source
+        </a>
+        </li>
+      </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="row">
+    <div class="col">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+

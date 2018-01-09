@@ -1,0 +1,220 @@
+<div class="row m-5">
+  <div class="col mt-3 pl-0">
+    <div class="input-group">
+      <input type="text" class="form-control" id="search1" placeholder="Search for sources...">
+      <div class="input-group-btn">
+        <button class="btn btn-secondary" type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="col mt-3 float-right">
+    <button class="col-2 btn btn-secondary float-right mr-4" style="width: fit-content" (click)="modalAddSource.show()">
+      <i class="fa fa-plus" title="Add Source"></i>
+    </button>
+  </div>
+</div>
+<div class="row m-5" id="datalist">
+  <div class="mb-6">
+  <data-table headerTitle="Sources" class="" [limit]="paginator.pageTotal" [items]="sources"
+              [itemCount]="sourcesCount" [header]="false" [selectOnRowClick]="true" [multiSelect]="false"
+              (rowClick)="rowClick($event)">
+    <data-table-column
+      [property]="'name'"
+      [header]="'Nombre'"
+      [sortable]="true"
+      [resizable]="true">
+    </data-table-column>
+    <data-table-column
+      [property]="'status'"
+      [header]="'Estado'"
+      [sortable]="true"
+      [resizable]="true">
+    </data-table-column>
+    <data-table-column
+      [property]="'actions'"
+      [header]="'Acciones'"
+      [sortable]="false"
+      [resizable]="false">
+      <ng-template #dataTableCell let-item="item">
+        <div class="row">
+          <div class="col col-2">
+		  <button id="approveSource" *ngIf="item.status == 'PENDING_APPROVAL'" class="btn btn-secondary px-2 py-1" (click)="modalApprove.show()">
+              <i class="fa fa-check fa-fw" title="Approve Source"></i>
+            </button>
+			</div>
+            <div class="col col-2">
+            <button id="editSource" class="btn btn-secondary px-2 py-1">
+              <i class="fa fa-pencil fa-fw" title="Edit Source" (click)="openUpdateModal(modalUpdateSource, item)"></i>
+            </button>
+            </div>
+          </div>
+          <div class="row mt-1">
+            <div class="col col-2">
+			<button id="rejectSource" *ngIf="item.status == 'PENDING_APPROVAL'" class="btn btn-secondary px-2 py-1" (click)="modalReject.show()">
+              <i class="fa fa-times fa-fw" title="Reject Source"></i>
+            </button>
+			 </div>
+            <div class="col col-2">
+              <button id="deleteSource" class="btn btn-secondary px-2 py-1" (click)="modalDelete.show()">
+                <i class="fa fa-trash fa-fw" title="Delete Source"></i>
+              </button>
+          </div>
+        </div>
+      </ng-template>
+    </data-table-column>
+  </data-table>
+</div>
+</div>
+
+<!-- Modal Add-->
+<div bsModal #modalAddSource="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span>Añadir Nueva Fuente</span>
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modalAddSource.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form role="form" [formGroup]="sourceForm" (ngSubmit)="AddSource(modalAddSource,sourceForm.value)">
+      <div class="modal-body">
+          <div class="form-group">
+            <label class="mr-sm-2" for="sourceName">Nombre: </label>
+            <input id="sourceName" type="text" class="form-control"
+                   [formControl]="sourceForm.controls['sourceName']"
+                   name="sourceName">
+          </div>
+          <div class="form-group">
+            <label class="mr-sm-2" for="sourceStatus">Estado Inicial: </label>
+            <input id="sourceStatus" type="text" class="form-control"
+                   [formControl]="sourceForm.controls['sourceStatus']"
+                   name="sourceStatus">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modalAddSource.hide()">Cerrar</button>
+        <button type="submit" class="btn btn-secondary modal-accept" [disabled]="!sourceForm.valid">Aceptar</button>
+      </div><!--Close modal-footer-->
+      </form>
+    </div><!--Close modal-content-->
+  </div><!--Close modal-dialog-->
+</div>
+
+<!-- Modal Update-->
+<div bsModal #modalUpdateSource="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+     aria-labelledby="myModalLabel1" aria-hidden="true" (onHide)="resetForm()">
+  <div class="modal-dialog" role="document">
+    <form role="form" [formGroup]="sourceForm" (ngSubmit)="UpdateSource(modalUpdateSource,sourceForm.value)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span>Actualizar Fuente</span>
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modalUpdateSource.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedSource">
+          <div class="form-group">
+            <label class="mr-sm-2" for="sourceName1">Nombre: </label>
+            <input id="sourceName1" type="text" class="form-control" [formControl]="sourceForm.controls['sourceName']">
+          </div>
+          <div class="form-group">
+            <label class="mr-sm-2" for="sourceStatus1">Estado: </label>
+            <input id="sourceStatus1" type="text" class="form-control" [formControl]="sourceForm.controls['sourceStatus']">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modalUpdateSource.hide()">Cerrar</button>
+        <button type="submit" class="btn btn-secondary modal-accept" [disabled]="!sourceForm.valid">Aceptar</button>
+      </div><!--Close modal-footer-->
+    </div><!--Close modal-content-->
+    </form>
+  </div><!--Close modal-dialog-->
+</div>
+
+<!-- Modal Approve-->
+<div bsModal #modalApprove="bs-modal" class="modal fade" tabindex="-1" role="dialog"  [config]="{backdrop: 'static'}"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span>Aprobar Fuente Pendiente</span>
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modalApprove.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedSource">
+        La fuente <span class="font-weight-bold">{{selectedSource.name}}</span> pasará a estado APROBADO.
+        ¿Desea continuar?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modalApprove.hide()">Cerrar</button>
+        <button type="button" class="btn btn-secondary modal-accept" (click)="ChangeStatus(modalApprove,'approve')">
+          Aceptar
+        </button>
+      </div><!--Close modal-footer-->
+    </div><!--Close modal-content-->
+  </div><!--Close modal-dialog-->
+</div>
+
+<!-- Modal Reject-->
+<div bsModal #modalReject="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span>Rechazar Fuente Pendiente</span>
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modalReject.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedSource">
+        La fuente <span class="font-weight-bold">{{selectedSource.name}}</span> pasará a estado RECHAZADO.
+        ¿Desea continuar?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modalReject.hide()">Cerrar</button>
+        <button type="button" class="btn btn-secondary modal-accept" (click)="ChangeStatus(modalReject,'reject')">
+          Aceptar
+        </button>
+      </div><!--Close modal-footer-->
+    </div><!--Close modal-content-->
+  </div><!--Close modal-dialog-->
+</div>
+
+<!-- Modal Delete-->
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span>Eliminar Fuente Pendiente</span>
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modalDelete.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedSource">
+        La fuente <span class="font-weight-bold">{{selectedSource.name}}</span> será eliminada del sistema.
+        ¿Desea continuar?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modalDelete.hide()">Cerrar</button>
+        <button type="button" class="btn btn-secondary modal-accept" (click)="DeleteSource(modalDelete)">
+          Aceptar
+        </button>
+      </div><!--Close modal-footer-->
+    </div><!--Close modal-content-->
+  </div><!--Close modal-dialog-->
+</div>
