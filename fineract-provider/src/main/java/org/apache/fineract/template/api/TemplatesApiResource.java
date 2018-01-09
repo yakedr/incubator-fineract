@@ -204,11 +204,11 @@ public class TemplatesApiResource {
         return this.templateMergeService.compile(template, parametersMap);
     }
 
-    private Map<String, Map<String, Object>> getDatatablesKeys() {
+    private List<Map<String, Object>> getDatatablesKeys() {
 
         List<DatatableData> datatableNames = readWriteNonCoreDataService.retrieveDatatableNames(null);
 
-        final Map<String, Map<String, Object>> out = new HashMap<>();
+        final List<Map<String, Object>> out = new LinkedList<>();
 
         for (final DatatableData data : datatableNames) {
             String datatablename = data.getRegisteredTableName();
@@ -221,7 +221,7 @@ public class TemplatesApiResource {
 
             Map<String, Object> templateMapper = new HashMap<>();
             templateMapper.put("mapperKey","datatable");
-            templateMapper.put("mapperValue","datatables/"+datatablename+"/{{"+appTableName.substring(2,appTableName.length())+"Id}}?tenantIdentifier=default");
+            templateMapper.put("mapperValue","datatables/"+datatablename+"/{{"+appTableName.substring(2,appTableName.length())+"Id}}?tenantIdentifier=");
             datableKeys.put("templateMapper", templateMapper);
 
             List<String> templateKeys = new ArrayList<>(columnHeaderData.size());
@@ -230,7 +230,7 @@ public class TemplatesApiResource {
             }
             datableKeys.put("templateKeys", templateKeys);
 
-            out.put(datatablename, datableKeys);
+            out.add(datableKeys);
         }
         return out;
     }

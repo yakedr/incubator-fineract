@@ -34,7 +34,7 @@ public class TemplateData {
     @SuppressWarnings("unused")
     private final List<Map<String, Object>> types;
 
-    private Map<String, Map<String, Object>> datatablesKeys;
+    private List<Map<String, Object>> datatablesKeys;
 
     @SuppressWarnings("unused")
     private final Template template;
@@ -75,7 +75,7 @@ public class TemplateData {
         return l;
     }
 
-    public void setDatatablesKeys(Map<String, Map<String, Object>> datatablesKeys) {
+    public void setDatatablesKeys(List<Map<String, Object>> datatablesKeys) {
         this.datatablesKeys = datatablesKeys;
     }
 }
