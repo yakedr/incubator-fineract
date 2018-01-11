@@ -13,6 +13,7 @@ import {HttpModule} from '@angular/http';
 import {ModalModule} from 'ngx-bootstrap/modal';
 import {ToastModule} from 'ng2-toastr';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 
 
 /*import {HttpClientModule, HttpClient} from '@angular/common/http';
@@ -49,7 +50,9 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     })*/
   ],
-  providers: [AppService],
+  providers: [AppService,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
